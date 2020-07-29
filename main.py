@@ -1,9 +1,14 @@
+import os
+import time
+
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
+from kivy.storage.jsonstore import JsonStore
+# from kivy.uix.camera import Camera
 # from database import DataBase
 
 
@@ -38,9 +43,11 @@ class CreateAccountWindow(Screen):
 class LoginWindow(Screen):
     email = ObjectProperty(None)
     password = ObjectProperty(None)
+    data_dir = App().user_data_dir
+    store = JsonStore(os.path.join(data_dir, 'storage.json'))
 
     def loginBtn(self):
-        # if db.validate(self.email.text, self.password.text):
+        # validate user here
         MainWindow.current = self.email.text
         self.reset()
         sm.current = "main"
@@ -51,9 +58,43 @@ class LoginWindow(Screen):
         self.reset()
         sm.current = "create"
 
+    def get_user(self):
+        try:
+            user = LoginWindow.store.get('credentials')['username']
+        except KeyError:
+            user = ""
+
+        return user
+
+    def get_pass(self):
+        try:
+            passwd = LoginWindow.store.get('credentials')['password']
+        except KeyError:
+            passwd = ""
+
+        return passwd
+
     def reset(self):
+        self.save_login()
         self.email.text = ""
         self.password.text = ""
+
+    def save_login(self):
+        email = self.email.text
+        passwd = self.password.text
+        LoginWindow.store.put('credentials', username=email, password=passwd)
+
+
+class CameraClick(Screen):
+    def capture(self):
+        '''
+        Function to capture the images and give them the names
+        according to their captured time and date.
+        '''
+        camera = self.ids['camera']
+        timestr = time.strftime("%Y%m%d_%H%M%S")
+        camera.export_to_png("WhoAmI_IMG_" + timestr)
+        print("Captured")
 
 
 class MainWindow(Screen):
@@ -94,9 +135,8 @@ def invalidForm():
 kv = Builder.load_file("my.kv")
 
 sm = WindowManager()
-# db = DataBase("users.txt")
 
-screens = [LoginWindow(name="login"), CreateAccountWindow(name="create"),MainWindow(name="main")]
+screens = [LoginWindow(name="login"), CreateAccountWindow(name="create"), CameraClick(name="main")]
 for screen in screens:
     sm.add_widget(screen)
 

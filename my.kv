@@ -113,6 +113,8 @@
             multiline: False
             pos_hint: {"x": 0.3 , "top":0.86}
             size_hint: 0.65, 0.065
+            text: root.get_user()
+            #on_enter_key: root.login()
 
         BackgroundLabel:
             background_color: 0, 0, 0, 0.3
@@ -128,6 +130,8 @@
             password: True
             pos_hint: {"x": 0.3, "top":0.66}
             size_hint: 0.65, 0.065
+            text: root.get_pass()
+            #on_enter_key: root.login()
 
         Button:
             pos_hint:{"x":0.35,"y":0.3}
@@ -146,6 +150,24 @@
             on_release:
                 root.manager.transition.direction = "right"
                 root.createBtn()
+
+
+<CameraClick>:
+    orientation: 'vertical'
+    Camera:
+        id: camera
+        resolution: (640, 480)
+        play: False
+    ToggleButton:
+        text: 'Play'
+        on_press: camera.play = not camera.play
+        size_hint_y: None
+        height: '48dp'
+    Button:
+        text: 'Capture'
+        size_hint_y: None
+        height: '48dp'
+        on_press: root.capture()
 
 
 <MainWindow>:

@@ -9,6 +9,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.storage.jsonstore import JsonStore
 from kivy.core.window import Window
+from kivy.utils import platform
 # from database import DataBase
 
 
@@ -93,6 +94,23 @@ class CameraClick(Screen):
     # print("Camera click init........{}".format(ids['camera']))
     # camera = ObjectProperty(None)
     # camera.play = True
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._request_android_permissions()
+
+    @staticmethod
+    def is_android():
+        return platform == 'android'
+
+    def _request_android_permissions(self):
+        """
+        Requests CAMERA permission on Android.
+        """
+        if not self.is_android():
+            return
+        from android.permissions import request_permission, Permission
+        request_permission(Permission.CAMERA)
+
     def capture(self):
         '''
         Function to capture the images and give them the names

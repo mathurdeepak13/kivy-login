@@ -48,10 +48,10 @@ class LoginWindow(Screen):
     store = JsonStore(os.path.join(data_dir, 'storage.json'))
 
     def loginBtn(self):
-        cam = sm.get_screen("main").ids['camera']
-        print("app camera: {}".format(cam))
-        cam.play = True
-        cam.resolution = Window.size
+        # cam = sm.get_screen("main").ids['camera']
+        # print("app camera: {}".format(cam))
+        # cam.play = True
+        # cam.resolution = Window.size
         # validate user here
         MainWindow.current = self.email.text
         self.reset()

@@ -8,7 +8,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.storage.jsonstore import JsonStore
-# from kivy.uix.camera import Camera
+from kivy.core.window import Window
 # from database import DataBase
 
 
@@ -47,6 +47,10 @@ class LoginWindow(Screen):
     store = JsonStore(os.path.join(data_dir, 'storage.json'))
 
     def loginBtn(self):
+        cam = sm.get_screen("main").ids['camera']
+        print("app camera: {}".format(cam))
+        cam.play = True
+        cam.resolution = Window.size
         # validate user here
         MainWindow.current = self.email.text
         self.reset()
@@ -86,6 +90,9 @@ class LoginWindow(Screen):
 
 
 class CameraClick(Screen):
+    # print("Camera click init........{}".format(ids['camera']))
+    # camera = ObjectProperty(None)
+    # camera.play = True
     def capture(self):
         '''
         Function to capture the images and give them the names
@@ -93,7 +100,7 @@ class CameraClick(Screen):
         '''
         camera = self.ids['camera']
         timestr = time.strftime("%Y%m%d_%H%M%S")
-        camera.export_to_png("WhoAmI_IMG_" + timestr)
+        camera.export_to_png("IMG_{}.png".format(timestr))
         print("Captured")
 
 
